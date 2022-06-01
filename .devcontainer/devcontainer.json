@@ -1,0 +1,29 @@
+{
+  "name": "Node.js",
+  "runArgs": ["--init"],
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "VARIANT": "18-bullseye"
+    }
+  },
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "gruntfuggly.todo-tree",
+    "pflannery.vscode-versionlens",
+    "eg2.vscode-npm-script",
+    "mrmlnc.vscode-duplicate",
+    "streetsidesoftware.code-spell-checker",
+    "esbenp.prettier-vscode",
+    "github.vscode-pull-request-github",
+    "GraphQL.vscode-graphql"
+  ],
+  "forwardPorts": [4000],
+  // "postCreateCommand": "",
+  "remoteUser": "node"
+}
