@@ -10,7 +10,7 @@ jobs:
       - name: Docker Build & Push
         uses: mr-smithers-excellent/docker-build-push@v5.6
         with:
-          image: duckmade-graphql-api-server
+          image: graphql-api-server
           registry: ghcr.io
           addLatest: ${{ github.ref_name == 'main' }}
           username: ${{ github.actor }}

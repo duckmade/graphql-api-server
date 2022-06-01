@@ -21,9 +21,9 @@ Here are some example snippets to help you get started creating a container.
 ---
 version: "3"
 services:
-  duckmade-graphql-api-server:
-    image: ghrc.io/duckmade/duckmade-graphql-api-server
-    container_name: duckmade-graphql-api-server
+  graphql-api-server:
+    image: ghrc.io/duckmade/graphql-api-server
+    container_name: graphql-api-server
     restart: unless-stopped
     ports:
       - 4000:4000
@@ -36,12 +36,12 @@ services:
 
 ```bash
 docker run -d \
-  --name=duckmade-graphql-api-server \
+  --name=graphql-api-server \
   --restart unless-stopped \
   -p 4000:4000 \
   -e SUBPATH=<subpath> \
   -e ORIGINS=<origins> \
-  ghrc.io/duckmade/duckmade-graphql-api-server
+  ghrc.io/duckmade/graphql-api-server
 ```
 
 ## Parameters
