@@ -16,15 +16,16 @@ export type Scalars = {
   JSONObject: any;
 };
 
-export type AuthenticateResponse = {
-  __typename?: 'AuthenticateResponse';
+export type AuthResponse = {
+  __typename?: 'AuthResponse';
   token: Scalars['String'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']>;
-  register: AuthenticateResponse;
+  register: AuthResponse;
+  sendMail: SendMailResponse;
 };
 
 
@@ -33,16 +34,35 @@ export type MutationRegisterArgs = {
   password: Scalars['String'];
 };
 
+
+export type MutationSendMailArgs = {
+  email: Scalars['String'];
+  message: Scalars['String'];
+  name: Scalars['String'];
+  subject: Scalars['String'];
+};
+
+export type PatreonStatusResponse = {
+  __typename?: 'PatreonStatusResponse';
+  member: Scalars['Boolean'];
+};
+
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']>;
-  login: AuthenticateResponse;
+  login: AuthResponse;
+  patreonStatus: PatreonStatusResponse;
 };
 
 
 export type QueryLoginArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type SendMailResponse = {
+  __typename?: 'SendMailResponse';
+  id: Scalars['String'];
 };
 
 
@@ -114,27 +134,31 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  AuthenticateResponse: ResolverTypeWrapper<AuthenticateResponse>;
+  AuthResponse: ResolverTypeWrapper<AuthResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
   JSONObject: ResolverTypeWrapper<Scalars['JSONObject']>;
   Mutation: ResolverTypeWrapper<{}>;
+  PatreonStatusResponse: ResolverTypeWrapper<PatreonStatusResponse>;
   Query: ResolverTypeWrapper<{}>;
+  SendMailResponse: ResolverTypeWrapper<SendMailResponse>;
   String: ResolverTypeWrapper<Scalars['String']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  AuthenticateResponse: AuthenticateResponse;
+  AuthResponse: AuthResponse;
   Boolean: Scalars['Boolean'];
   JSON: Scalars['JSON'];
   JSONObject: Scalars['JSONObject'];
   Mutation: {};
+  PatreonStatusResponse: PatreonStatusResponse;
   Query: {};
+  SendMailResponse: SendMailResponse;
   String: Scalars['String'];
 };
 
-export type AuthenticateResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthenticateResponse'] = ResolversParentTypes['AuthenticateResponse']> = {
+export type AuthResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = {
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -149,19 +173,33 @@ export interface JsonObjectScalarConfig extends GraphQLScalarTypeConfig<Resolver
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  register?: Resolver<ResolversTypes['AuthenticateResponse'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
+  register?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
+  sendMail?: Resolver<ResolversTypes['SendMailResponse'], ParentType, ContextType, RequireFields<MutationSendMailArgs, 'email' | 'message' | 'name' | 'subject'>>;
+};
+
+export type PatreonStatusResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['PatreonStatusResponse'] = ResolversParentTypes['PatreonStatusResponse']> = {
+  member?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  login?: Resolver<ResolversTypes['AuthenticateResponse'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'email' | 'password'>>;
+  login?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'email' | 'password'>>;
+  patreonStatus?: Resolver<ResolversTypes['PatreonStatusResponse'], ParentType, ContextType>;
+};
+
+export type SendMailResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SendMailResponse'] = ResolversParentTypes['SendMailResponse']> = {
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
-  AuthenticateResponse?: AuthenticateResponseResolvers<ContextType>;
+  AuthResponse?: AuthResponseResolvers<ContextType>;
   JSON?: GraphQLScalarType;
   JSONObject?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
+  PatreonStatusResponse?: PatreonStatusResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  SendMailResponse?: SendMailResponseResolvers<ContextType>;
 };
 

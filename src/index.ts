@@ -1,36 +1,73 @@
+import http from "http"
 import compression from "compression"
-import Express from "express"
+import express from "express"
+import * as winston from "winston"
+import * as expressWinston from "express-winston"
+import debug from "debug"
 import { ApolloServer } from "apollo-server-express"
 import {
+  ApolloServerPluginDrainHttpServer,
   ApolloServerPluginLandingPageDisabled,
   ApolloServerPluginLandingPageLocalDefault,
 } from "apollo-server-core"
 import schema from "./graphql/schemasMap"
-// import { database_connection } from "./database_connection"
+import {
+  HOST,
+  IS_PROD,
+  ORIGINS,
+  PATREON_HOST,
+  PORT,
+  SENDINBLUE_HOST,
+  SENDINBLUE_KEY,
+  SUB_PATH,
+} from "./variables"
+import CommonRoutes from "./common/routes"
+import PatreonRoutes from "./patreon/routes"
+import PatreonAPI from "./graphql/apis/patreon"
+import SendInBlueAPI from "./graphql/apis/sendinblue"
 
-const PORT = process.env.PORT || 4000
-const SUBPATH = process.env.SUBPATH || "/graphql"
-const ORIGINS = (process.env.ORIGINS || "*").split(",")
+const app = express()
+const httpServer = http.createServer(app)
+const routes: CommonRoutes[] = []
+const debugLog = debug("app")
+const loggerOptions: expressWinston.LoggerOptions = {
+  transports: [new winston.transports.Console()],
+  format: winston.format.combine(
+    winston.format.json(),
+    winston.format.prettyPrint(),
+    winston.format.colorize({ all: true })
+  ),
+}
+if (!process.env.DEBUG) loggerOptions.meta = false
 
-const app = Express()
+app.use(express.json())
 app.use(compression())
+app.use(expressWinston.logger(loggerOptions))
 
-// await database_connection()
-const server = new ApolloServer({
+routes.push(new PatreonRoutes(app))
+
+const apollo = new ApolloServer({
+  schema,
+  csrfPrevention: true,
   plugins: [
-    process.env.NODE_ENV === "production"
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    IS_PROD
       ? ApolloServerPluginLandingPageDisabled()
       : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
   ],
-  schema,
-  csrfPrevention: true,
-  // context: async ({ req, res }) => await initialize_context(req, res),
+  dataSources: () => ({
+    patreonAPI: new PatreonAPI(PATREON_HOST),
+    sendInBlueAPI: new SendInBlueAPI(SENDINBLUE_HOST, SENDINBLUE_KEY),
+  }),
+  context: ({ req }) => ({
+    token: req.headers.authentication || "",
+  }),
 })
 
-server.start().then(() => {
-  server.applyMiddleware({
+apollo.start().then(() => {
+  apollo.applyMiddleware({
     app,
-    path: `${SUBPATH}`,
+    path: `${SUB_PATH}/graphql`,
     bodyParserConfig: { limit: "50mb" },
     cors: {
       origin: ORIGINS.length >= 1 ? ORIGINS[0] : ORIGINS,
@@ -41,12 +78,12 @@ server.start().then(() => {
       // optionsSuccessStatus: 204,
     },
   })
-  app.listen(PORT, () => {
-    console.log(`🚀 DUCKMADE's GraphQL server is now running!`)
-    console.log(`\nAccess the API via the following origin(s):`)
-    ORIGINS.map((o: string) => {
-      if (o === "*") console.log(`http://localhost:${PORT}${SUBPATH}`)
-      else console.log(`${o}:${PORT}${SUBPATH}`)
+
+  httpServer.listen(PORT, () => {
+    routes.map((r: CommonRoutes) => {
+      debugLog(`Routes configured for ${r.getName()}`)
     })
+    debugLog(`Apollo GraphQL configured ${apollo.graphqlPath}`)
+    console.log(`🚀 DUCKMADE's API server is now running at ${HOST}${SUB_PATH}`)
   })
 })

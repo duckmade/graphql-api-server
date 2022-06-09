@@ -1,25 +1,37 @@
 import { IResolvers } from "@graphql-tools/utils"
 import {
-  AuthenticateResponse,
+  AuthResponse,
+  PatreonStatusResponse,
   MutationRegisterArgs,
   QueryLoginArgs,
 } from "../generated"
 
-export const UserResolvers: IResolvers = {
+export const UserResolver: IResolvers = {
   Query: {
-    async login(_: void, args: QueryLoginArgs): Promise<AuthenticateResponse> {
+    login: async (_: void, args: QueryLoginArgs): Promise<AuthResponse> => {
       return {
-        token: "toto",
+        token: "test",
+      }
+    },
+    patreonStatus: async (
+      _: void,
+      __: void,
+      { dataSources }
+    ): Promise<PatreonStatusResponse> => {
+      const res = dataSources.patreonAPI.getMemberships()
+
+      return {
+        member: res.relationships.memberships.data?.length > 0 || false,
       }
     },
   },
   Mutation: {
-    async register(
+    register: async (
       _: void,
       args: MutationRegisterArgs
-    ): Promise<AuthenticateResponse> {
+    ): Promise<AuthResponse> => {
       return {
-        token: "toto",
+        token: "test",
       }
     },
   },

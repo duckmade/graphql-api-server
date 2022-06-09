@@ -1,11 +1,16 @@
 extend type Query {
-  login(email: String!, password: String!): AuthenticateResponse!
+  login(email: String!, password: String!): AuthResponse!
+  patreonStatus: PatreonStatusResponse!
 }
 
 extend type Mutation {
-  register(email: String!, password: String!): AuthenticateResponse!
+  register(email: String!, password: String!): AuthResponse!
 }
 
-type AuthenticateResponse {
+type AuthResponse {
   token: String!
+}
+
+type PatreonStatusResponse {
+  member: Boolean!
 }

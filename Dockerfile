@@ -13,3 +13,4 @@ RUN npm install --production
 RUN npm install -g pm2
 COPY --from=builder /usr/app/dist ./dist
 CMD ["pm2", "start", "dist/index.js"]
+EXPOSE 4000/tcp
