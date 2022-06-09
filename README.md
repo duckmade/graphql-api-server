@@ -18,17 +18,16 @@ Below you'll find a docker compose example to get you up and running
 ```yaml
 version: "3"
 services:
-  graphql-api-server:
+  app:
     image: ghrc.io/duckmade/graphql-api-server
-    container_name: graphql-api-server
     restart: unless-stopped
     ports:
       - 4000:4000
     environment:
       PATREON_ID: "<patreon-id>"
       PATREON_SECRET: "<patreon-secret>"
+      PATREON_CALLBACK: "<patreon-callback>"
       SENDINBLUE_KEY: "<sendinblue-key>"
-      HOST: "<host>"
       SUB_PATH: "<sub-path>"
       ORIGINS: "<origins>"
 ```
@@ -37,11 +36,11 @@ services:
 
 Container images are configured using parameters passed at runtime (such as those above).
 
-|              Parameter               | Function                                                                                                                                                                         |
-| :----------------------------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|     `-e PATREON_ID=<patreon-id>`     | Patreon ID, used for authentication.                                                                                                                                             |
-| `-e PATREON_SECRET=<patreon-secret>` | Patreon secret for given Patreon ID, used for authentication.                                                                                                                    |
-| `-e SENDINBLUE_KEY=<sendinblue-key>` | Sendinblue (email provider) API key for sending transactional emails.                                                                                                            |
-|           `-e HOST=<host>`           | **Optional** - The host URL (and port if necessary) for this server, without trailing slash. Required for Patreon's authentication callback. Defaults to `http://localhost:4000` |
-|       `-e SUB_PATH=<sub-path>`       | **Optional** - A sub-path to be appended to the host URL for which this server receives requests on. Defaults to `/api`                                                          |
-|        `-e ORIGINS=<origins>`        | **Optional** - Comma separated string of allowed CORS origins. Defaults to `*`                                                                                                   |
+|                Parameter                 | Function                                                                                                                                                       |
+| :--------------------------------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|       `-e PATREON_ID=<patreon-id>`       | Patreon ID, used for authentication.                                                                                                                           |
+|   `-e PATREON_SECRET=<patreon-secret>`   | Patreon secret for given the Patreon ID, used for authentication.                                                                                              |
+| `-e PATREON_CALLBACK=<patreon-callback>` | Patreon callback URL, without trailing slash, for the given Patreon ID, used for authentication.                                                               |
+|   `-e SENDINBLUE_KEY=<sendinblue-key>`   | Sendinblue (email provider) API key for sending transactional emails.                                                                                          |
+|         `-e SUB_PATH=<sub-path>`         | **Optional** - A sub-path, including prepending slash, to be appended to the host URL for which this server receives requests on. Defaults to an empty string. |
+|          `-e ORIGINS=<origins>`          | **Optional** - Comma separated string of allowed CORS origins. Defaults to allow all origins.                                                                  |

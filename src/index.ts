@@ -12,11 +12,12 @@ import {
 } from "apollo-server-core"
 import schema from "./graphql/schemasMap"
 import {
+  DEBUG,
   HOST,
-  IS_PROD,
   ORIGINS,
   PATREON_HOST,
   PORT,
+  PROD,
   SENDINBLUE_HOST,
   SENDINBLUE_KEY,
   SUB_PATH,
@@ -38,7 +39,7 @@ const loggerOptions: expressWinston.LoggerOptions = {
     winston.format.colorize({ all: true })
   ),
 }
-if (!process.env.DEBUG) loggerOptions.meta = false
+if (!DEBUG) loggerOptions.meta = false
 
 app.use(express.json())
 app.use(compression())
@@ -51,7 +52,7 @@ const apollo = new ApolloServer({
   csrfPrevention: true,
   plugins: [
     ApolloServerPluginDrainHttpServer({ httpServer }),
-    IS_PROD
+    PROD
       ? ApolloServerPluginLandingPageDisabled()
       : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
   ],
@@ -79,11 +80,13 @@ apollo.start().then(() => {
     },
   })
 
-  httpServer.listen(PORT, () => {
+  httpServer.listen(PORT, HOST, () => {
     routes.map((r: CommonRoutes) => {
       debugLog(`Routes configured for ${r.getName()}`)
     })
     debugLog(`Apollo GraphQL configured ${apollo.graphqlPath}`)
-    console.log(`🚀 DUCKMADE's API server is now running at ${HOST}${SUB_PATH}`)
+    console.log(
+      `🚀 DUCKMADE's API server is now running at http://${HOST}:${PORT}${SUB_PATH}`
+    )
   })
 })

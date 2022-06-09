@@ -1,5 +1,5 @@
 import express from "express"
-import { HOST, SUB_PATH } from "../variables"
+import { PATREON_CALLBACK, SUB_PATH } from "../variables"
 import CommonRoutes from "../common/routes"
 import oauth2 from "./auth"
 
@@ -8,7 +8,7 @@ export default class PatreonRoutes extends CommonRoutes {
 
   constructor(app: express.Application) {
     super(app, "PatreonRoutes")
-    this.redirectUri = `${HOST}${SUB_PATH}/patreon/callback`
+    this.redirectUri = `${PATREON_CALLBACK}${SUB_PATH}/patreon/callback`
   }
 
   configureRoutes() {
