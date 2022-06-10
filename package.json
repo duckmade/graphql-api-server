@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run codegen && nodemon -r dotenv/config src/index.ts --exec ts-node src/index.ts -e ts,graphql,json",
+    "start": "export DEBUG=* && npm run codegen && nodemon -r dotenv/config src/index.ts --exec ts-node src/index.ts -e ts,graphql,json",
     "build": "npm run codegen && tsc -p . && cp -r src/graphql/schemas dist/graphql",
     "codegen": "graphql-codegen --config codegen.yml",
     "test": "echo \"Error: no tests specified\" && exit 0",
-    "serve": "node dist/index.js"
+    "serve": "export NODE_ENV=production && node dist/index.js"
   },
   "keywords": [
     "graphql",

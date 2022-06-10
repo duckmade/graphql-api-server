@@ -12,7 +12,6 @@ import {
 } from "apollo-server-core"
 import schema from "./graphql/schemasMap"
 import {
-  DEBUG,
   HOST,
   ORIGINS,
   PATREON_HOST,
@@ -40,8 +39,8 @@ const loggerOptions: expressWinston.LoggerOptions = {
     winston.format.prettyPrint(),
     winston.format.colorize({ all: true })
   ),
+  meta: !PROD,
 }
-if (!DEBUG) loggerOptions.meta = false
 
 app.use(express.json())
 app.use(compression())

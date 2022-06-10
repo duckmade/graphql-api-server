@@ -14,7 +14,6 @@ if (!process.env.SENDINBLUE_KEY) {
 
 // Common
 export const PROD = process.env.NODE_ENV === "production"
-export const DEBUG = process.env.DEBUG
 export const HOST = PROD ? "0.0.0.0" : "localhost"
 export const PORT = 4000
 export const BASE_PATH = process.env.BASE_PATH || ""
