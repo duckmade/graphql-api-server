@@ -12,4 +12,4 @@ COPY package*.json ./
 RUN npm install --omit=dev
 COPY --from=builder /usr/app/dist ./dist
 EXPOSE 4000
-CMD ["nodemon", "dist/index.js"]
+CMD ["node", "dist/index.js"]

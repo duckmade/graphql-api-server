@@ -1,3 +1,17 @@
+// Check mandatory env variables
+if (!process.env.PATREON_ID) {
+  console.log("MISSING REQUIRED ENV VARS. Please set PATREON_ID.")
+}
+if (!process.env.PATREON_SECRET) {
+  console.log("MISSING REQUIRED ENV VARS. Please set PATREON_SECRET.")
+}
+if (!process.env.PATREON_CALLBACK) {
+  console.log("MISSING REQUIRED ENV VARS. Please set PATREON_CALLBACK.")
+}
+if (!process.env.SENDINBLUE_KEY) {
+  console.log("MISSING REQUIRED ENV VARS. Please set SENDINBLUE_KEY.")
+}
+
 // Common
 export const PROD = process.env.NODE_ENV === "production"
 export const DEBUG = process.env.DEBUG
@@ -19,17 +33,3 @@ export const SENDINBLUE_KEY = process.env.SENDINBLUE_KEY || ""
 
 // Add all APIs to the origins list
 ORIGINS.push(PATREON_HOST, SENDINBLUE_HOST)
-
-// Check mandatory env variables
-if (!PATREON_ID) {
-  console.log("MISSING REQUIRED ENV VARS. Please set PATREON_ID.")
-}
-if (!PATREON_SECRET) {
-  console.log("MISSING REQUIRED ENV VARS. Please set PATREON_SECRET.")
-}
-if (!PATREON_CALLBACK) {
-  console.log("MISSING REQUIRED ENV VARS. Please set PATREON_CALLBACK.")
-}
-if (!SENDINBLUE_KEY) {
-  console.log("MISSING REQUIRED ENV VARS. Please set SENDINBLUE_KEY.")
-}

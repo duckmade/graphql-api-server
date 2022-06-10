@@ -8,7 +8,7 @@
     "build": "npm run codegen && tsc -p . && cp -r src/graphql/schemas dist/graphql",
     "codegen": "graphql-codegen --config codegen.yml",
     "test": "echo \"Error: no tests specified\" && exit 0",
-    "serve": "nodemon dist/index.js"
+    "serve": "node dist/index.js"
   },
   "keywords": [
     "graphql",
