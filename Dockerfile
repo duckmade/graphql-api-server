@@ -10,7 +10,6 @@ FROM node:18-alpine
 WORKDIR /usr/app
 COPY package*.json ./
 RUN npm install --omit=dev
-RUN npm install -g pm2
 COPY --from=builder /usr/app/dist ./dist
 EXPOSE 4000
-CMD ["pm2", "start", "dist/index.js"]
+CMD ["nodemon", "dist/index.js"]

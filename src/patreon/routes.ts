@@ -1,21 +1,38 @@
 import express from "express"
-import { PATREON_CALLBACK, SUB_PATH } from "../variables"
+import { AuthorizationCode } from "simple-oauth2"
+import {
+  PATREON_CALLBACK,
+  PATREON_HOST,
+  PATREON_ID,
+  PATREON_SECRET,
+} from "../variables"
 import CommonRoutes from "../common/routes"
-import oauth2 from "./auth"
 
 export default class PatreonRoutes extends CommonRoutes {
+  authCode: AuthorizationCode
   redirectUri: string
 
   constructor(app: express.Application) {
     super(app, "PatreonRoutes")
-    this.redirectUri = `${PATREON_CALLBACK}${SUB_PATH}/patreon/callback`
+    this.authCode = new AuthorizationCode({
+      client: {
+        id: PATREON_ID,
+        secret: PATREON_SECRET,
+      },
+      auth: {
+        tokenHost: PATREON_HOST,
+        authorizePath: `${PATREON_HOST}/oauth2/authorize`,
+        tokenPath: `${PATREON_HOST}/api/oauth2/token`,
+      },
+    })
+    this.redirectUri = `${PATREON_CALLBACK}/patreon/callback`
   }
 
   configureRoutes() {
     this.app
-      .route(`${SUB_PATH}/patreon/auth`)
+      .route(`/patreon/auth`)
       .get((req: express.Request, res: express.Response) => {
-        const authorizationUri = oauth2.authorizeURL({
+        const authorizationUri = this.authCode.authorizeURL({
           redirect_uri: this.redirectUri,
           scope: "identity",
           state: req.headers.referer,
@@ -29,7 +46,7 @@ export default class PatreonRoutes extends CommonRoutes {
       })
 
     this.app
-      .route(`${SUB_PATH}/patreon/callback`)
+      .route(`/patreon/callback`)
       .get((req: express.Request, res: express.Response) => {
         const code = req.query.code?.toString() || ""
         const state = req.query.state?.toString()
@@ -53,7 +70,7 @@ export default class PatreonRoutes extends CommonRoutes {
 
         Promise.resolve()
           .then(() =>
-            oauth2.getToken({
+            this.authCode.getToken({
               code: code,
               redirect_uri: this.redirectUri,
             })

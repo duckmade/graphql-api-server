@@ -19,7 +19,7 @@ Below you'll find a docker compose example to get you up and running
 version: "3"
 services:
   app:
-    image: ghrc.io/duckmade/graphql-api-server
+    image: ghcr.io/duckmade/graphql-api-server
     restart: unless-stopped
     ports:
       - 4000:4000
@@ -28,7 +28,7 @@ services:
       PATREON_SECRET: "<patreon-secret>"
       PATREON_CALLBACK: "<patreon-callback>"
       SENDINBLUE_KEY: "<sendinblue-key>"
-      SUB_PATH: "<sub-path>"
+      BASE_PATH: "<base-path>"
       ORIGINS: "<origins>"
 ```
 
@@ -36,11 +36,11 @@ services:
 
 Container images are configured using parameters passed at runtime (such as those above).
 
-|                Parameter                 | Function                                                                                                                                                       |
-| :--------------------------------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|       `-e PATREON_ID=<patreon-id>`       | Patreon ID, used for authentication.                                                                                                                           |
-|   `-e PATREON_SECRET=<patreon-secret>`   | Patreon secret for given the Patreon ID, used for authentication.                                                                                              |
-| `-e PATREON_CALLBACK=<patreon-callback>` | Patreon callback URL, without trailing slash, for the given Patreon ID, used for authentication.                                                               |
-|   `-e SENDINBLUE_KEY=<sendinblue-key>`   | Sendinblue (email provider) API key for sending transactional emails.                                                                                          |
-|         `-e SUB_PATH=<sub-path>`         | **Optional** - A sub-path, including prepending slash, to be appended to the host URL for which this server receives requests on. Defaults to an empty string. |
-|          `-e ORIGINS=<origins>`          | **Optional** - Comma separated string of allowed CORS origins. Defaults to allow all origins.                                                                  |
+|                Parameter                 | Function                                                                                                                                                        |
+| :--------------------------------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|       `-e PATREON_ID=<patreon-id>`       | Patreon ID, used for authentication.                                                                                                                            |
+|   `-e PATREON_SECRET=<patreon-secret>`   | Patreon secret for given the Patreon ID, used for authentication.                                                                                               |
+| `-e PATREON_CALLBACK=<patreon-callback>` | Patreon callback URL, without trailing slash, for the given Patreon ID, used for authentication. Note that the base-path is appended to this URL.               |
+|   `-e SENDINBLUE_KEY=<sendinblue-key>`   | Sendinblue (email provider) API key for sending transactional emails.                                                                                           |
+|        `-e BASE_PATH=<base-path>`        | **Optional** - A base-path, including prepending slash, to be appended to the host URL for which this server receives requests on. Defaults to an empty string. |
+|          `-e ORIGINS=<origins>`          | **Optional** - Comma separated string of allowed CORS origins. Defaults to allow all origins.                                                                   |

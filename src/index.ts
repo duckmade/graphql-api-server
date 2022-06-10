@@ -20,17 +20,19 @@ import {
   PROD,
   SENDINBLUE_HOST,
   SENDINBLUE_KEY,
-  SUB_PATH,
+  BASE_PATH,
 } from "./variables"
 import CommonRoutes from "./common/routes"
 import PatreonRoutes from "./patreon/routes"
-import PatreonAPI from "./graphql/apis/patreon"
-import SendInBlueAPI from "./graphql/apis/sendinblue"
+import PatreonAPI from "./graphql/datasources/patreon"
+import SendInBlueAPI from "./graphql/datasources/sendinblue"
 
 const app = express()
-const httpServer = http.createServer(app)
+const server = express()
+server.use(BASE_PATH, app)
+const httpServer = http.createServer(server)
 const routes: CommonRoutes[] = []
-const debugLog = debug("app")
+const debugLog = debug("server")
 const loggerOptions: expressWinston.LoggerOptions = {
   transports: [new winston.transports.Console()],
   format: winston.format.combine(
@@ -68,7 +70,7 @@ const apollo = new ApolloServer({
 apollo.start().then(() => {
   apollo.applyMiddleware({
     app,
-    path: `${SUB_PATH}/graphql`,
+    path: `/graphql`,
     bodyParserConfig: { limit: "50mb" },
     cors: {
       origin: ORIGINS.length >= 1 ? ORIGINS[0] : ORIGINS,
@@ -84,9 +86,9 @@ apollo.start().then(() => {
     routes.map((r: CommonRoutes) => {
       debugLog(`Routes configured for ${r.getName()}`)
     })
-    debugLog(`Apollo GraphQL configured ${apollo.graphqlPath}`)
+    debugLog(`GraphQL configured for ApolloServer`)
     console.log(
-      `🚀 DUCKMADE's API server is now running at http://${HOST}:${PORT}${SUB_PATH}`
+      `🚀 DUCKMADE's API server is now running at http://${HOST}:${PORT}${app.path()}`
     )
   })
 })
