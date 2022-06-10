@@ -58,7 +58,7 @@ class PatreonAPI extends HTTPDataSource {
       },
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Bearer ${this.context.token}`,
+        Authorization: `Bearer ${this.context.cookies.patreon}`,
       },
       requestCache: {
         maxTtl: 10 * 60, // 10min, will respond for 10min with the cached result (updated every 10min)

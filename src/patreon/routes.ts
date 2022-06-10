@@ -31,81 +31,40 @@ export default class PatreonRoutes extends CommonRoutes {
   configureRoutes() {
     this.app
       .route(`/patreon/auth`)
-      .get((req: express.Request, res: express.Response) => {
-        const authorizationUri = this.authCode.authorizeURL({
-          redirect_uri: this.redirectUri,
-          scope: "identity",
-          state: req.headers.referer,
-        })
-
-        res
-          .status(304)
-          .setHeader("Location", authorizationUri)
-          .setHeader("Cache-Control", "no-cache")
-          .send("")
-      })
+      .get((req: express.Request, res: express.Response) =>
+        res.redirect(
+          this.authCode.authorizeURL({
+            redirect_uri: this.redirectUri,
+            scope: "identity",
+            state: req.headers.referer,
+          })
+        )
+      )
 
     this.app
       .route(`/patreon/callback`)
       .get((req: express.Request, res: express.Response) => {
-        const code = req.query.code?.toString() || ""
-        const state = req.query.state?.toString()
-        const html = `
-          <html lang="en">
-            <head>
-              <meta charset="utf-8">
-            </head>
-            <body>
-              <noscript>
-                <meta http-equiv="refresh" content="0; url=${state}" />
-              </noscript>
-            </body>
-            <script>
-              setTimeout(function() {
-                window.location.href = ${JSON.stringify(state)}
-              }, 0)
-            </script>
-          </html>
-        `
-
+        const state = req.query.state?.toString() || ""
         Promise.resolve()
           .then(() =>
             this.authCode.getToken({
-              code: code,
+              code: req.query.code?.toString() || "",
               redirect_uri: this.redirectUri,
             })
           )
           .then((result) =>
             res
-              .status(200)
-              .setHeader(
-                "Set-Cookie",
-                `patron=${JSON.stringify({
-                  token: result.token.access_token,
-                  status: 200,
-                })}; ${
-                  result.token.expires_at
-                    ? `Expires=${result.token.expires_at}; `
-                    : ""
-                }Path=/; Secure`
-              )
-              .setHeader("Cache-Control", "no-cache")
-              .setHeader("Content-Type", "text/html")
-              .send(html)
+              .cookie("patreon", result.token.access_token, {
+                expires: result.token.expires_at,
+                path: "/",
+                secure: true,
+              })
+              .redirect(state)
           )
-          .catch((error) =>
+          .catch(() =>
             res
-              .status(error.statusCode || 500)
-              .setHeader(
-                "Set-Cookie",
-                `patron=${JSON.stringify({
-                  token: "",
-                  status: error.statusCode || 500,
-                })}; Path=/; Secure`
-              )
-              .setHeader("Cache-Control", "no-cache")
-              .setHeader("Content-Type", "text/html")
-              .send(html)
+              .cookie("patreon", "", { path: "/", secure: true })
+              .redirect(state)
           )
       })
 

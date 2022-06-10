@@ -1,6 +1,8 @@
 import http from "http"
 import compression from "compression"
 import express from "express"
+import cors from "cors"
+import CookieParser from "cookie-parser"
 import * as winston from "winston"
 import * as expressWinston from "express-winston"
 import debug from "debug"
@@ -41,9 +43,19 @@ const loggerOptions: expressWinston.LoggerOptions = {
   ),
   meta: !PROD,
 }
+const corsOptions = {
+  origin: ORIGINS.length >= 1 ? ORIGINS[0] : ORIGINS,
+  credentials: true,
+  // allowedHeaders: ["Content-Type", "Authorization"],
+  // methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  // preflightContinue: false,
+  // optionsSuccessStatus: 204,
+}
 
 app.use(express.json())
+app.use(cors(corsOptions))
 app.use(compression())
+app.use(CookieParser())
 app.use(expressWinston.logger(loggerOptions))
 
 routes.push(new PatreonRoutes(app))
@@ -61,9 +73,15 @@ const apollo = new ApolloServer({
     patreonAPI: new PatreonAPI(PATREON_HOST),
     sendInBlueAPI: new SendInBlueAPI(SENDINBLUE_HOST, SENDINBLUE_KEY),
   }),
-  context: ({ req }) => ({
-    token: req.headers.authentication || "",
-  }),
+  context: ({ req }) => {
+    console.log(req)
+    return {
+      cookies: {
+        patreon: req.cookies.patreon || "",
+      },
+      token: req.headers.authentication || "",
+    }
+  },
 })
 
 apollo.start().then(() => {
@@ -71,14 +89,7 @@ apollo.start().then(() => {
     app,
     path: `/graphql`,
     bodyParserConfig: { limit: "50mb" },
-    cors: {
-      origin: ORIGINS.length >= 1 ? ORIGINS[0] : ORIGINS,
-      credentials: true,
-      // allowedHeaders: ["Content-Type", "Authorization"],
-      // methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-      // preflightContinue: false,
-      // optionsSuccessStatus: 204,
-    },
+    cors: corsOptions,
   })
 
   httpServer.listen(PORT, HOST, () => {
