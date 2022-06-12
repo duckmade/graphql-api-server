@@ -32,3 +32,4 @@ export const SENDINBLUE_KEY = process.env.SENDINBLUE_KEY || ""
 
 // Add all APIs to the origins list
 ORIGINS.push(PATREON_HOST, SENDINBLUE_HOST)
+!PROD && ORIGINS.push("https://studio.apollographql.com")

@@ -57,13 +57,18 @@ export default class PatreonRoutes extends CommonRoutes {
               .cookie("patreon", result.token.access_token, {
                 expires: result.token.expires_at,
                 path: "/",
+                sameSite: "none",
                 secure: true,
               })
               .redirect(state)
           )
           .catch(() =>
             res
-              .cookie("patreon", "", { path: "/", secure: true })
+              .cookie("patreon", "", {
+                path: "/",
+                sameSite: "none",
+                secure: true,
+              })
               .redirect(state)
           )
       })

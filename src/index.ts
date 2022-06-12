@@ -44,7 +44,7 @@ const loggerOptions: expressWinston.LoggerOptions = {
   meta: !PROD,
 }
 const corsOptions = {
-  origin: ORIGINS.length >= 1 ? ORIGINS[0] : ORIGINS,
+  origin: ORIGINS.length === 1 ? ORIGINS[0] : ORIGINS,
   credentials: true,
   // allowedHeaders: ["Content-Type", "Authorization"],
   // methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
@@ -74,7 +74,7 @@ const apollo = new ApolloServer({
     sendInBlueAPI: new SendInBlueAPI(SENDINBLUE_HOST, SENDINBLUE_KEY),
   }),
   context: ({ req }) => {
-    console.log(req)
+    console.log(req.cookies)
     return {
       cookies: {
         patreon: req.cookies.patreon || "",
@@ -89,7 +89,7 @@ apollo.start().then(() => {
     app,
     path: `/graphql`,
     bodyParserConfig: { limit: "50mb" },
-    cors: corsOptions,
+    cors: false,
   })
 
   httpServer.listen(PORT, HOST, () => {
