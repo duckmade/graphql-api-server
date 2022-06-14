@@ -14,14 +14,14 @@ import {
 } from "apollo-server-core"
 import schema from "./graphql/schemasMap"
 import {
-  HOST,
-  ORIGINS,
+  SERVER_CORS_ORIGINS,
   PATREON_HOST,
-  PORT,
-  PROD,
   SENDINBLUE_HOST,
   SENDINBLUE_KEY,
-  BASE_PATH,
+  SERVER_HOST,
+  SERVER_PORT,
+  PROD,
+  SERVER_BASE_PATH,
 } from "./variables"
 import CommonRoutes from "./common/routes"
 import PatreonRoutes from "./patreon/routes"
@@ -30,7 +30,7 @@ import SendInBlueAPI from "./graphql/datasources/sendinblue"
 
 const app = express()
 const server = express()
-server.use(BASE_PATH, app)
+server.use(SERVER_BASE_PATH, app)
 const httpServer = http.createServer(server)
 const routes: CommonRoutes[] = []
 const debugLog = debug("server")
@@ -44,14 +44,14 @@ const loggerOptions: expressWinston.LoggerOptions = {
   meta: !PROD,
 }
 const corsOptions = {
-  origin: ORIGINS.length === 1 ? ORIGINS[0] : ORIGINS,
+  origin:
+    SERVER_CORS_ORIGINS.length === 1
+      ? SERVER_CORS_ORIGINS[0]
+      : SERVER_CORS_ORIGINS,
   credentials: true,
-  // allowedHeaders: ["Content-Type", "Authorization"],
-  // methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  // preflightContinue: false,
-  // optionsSuccessStatus: 204,
 }
 
+if (PROD) app.enable("trust proxy")
 app.use(express.json())
 app.use(cors(corsOptions))
 app.use(compression())
@@ -73,15 +73,12 @@ const apollo = new ApolloServer({
     patreonAPI: new PatreonAPI(PATREON_HOST),
     sendInBlueAPI: new SendInBlueAPI(SENDINBLUE_HOST, SENDINBLUE_KEY),
   }),
-  context: ({ req }) => {
-    console.log(req.cookies)
-    return {
-      cookies: {
-        patreon: req.cookies.patreon || "",
-      },
-      token: req.headers.authentication || "",
-    }
-  },
+  context: ({ req }) => ({
+    cookies: {
+      patreon: req.cookies.patreon || "",
+    },
+    token: req.headers.authentication || "",
+  }),
 })
 
 apollo.start().then(() => {
@@ -92,13 +89,13 @@ apollo.start().then(() => {
     cors: false,
   })
 
-  httpServer.listen(PORT, HOST, () => {
+  httpServer.listen(SERVER_PORT, SERVER_HOST, () => {
     routes.map((r: CommonRoutes) => {
       debugLog(`Routes configured for ${r.getName()}`)
     })
     debugLog(`GraphQL configured for ApolloServer`)
     console.log(
-      `🚀 DUCKMADE's API server is now running at http://${HOST}:${PORT}${app.path()}`
+      `🚀 DUCKMADE's API server is now running at http://${SERVER_HOST}:${SERVER_PORT}${app.path()}`
     )
   })
 })

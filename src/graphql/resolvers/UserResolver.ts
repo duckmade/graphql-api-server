@@ -8,31 +8,22 @@ import {
 
 export const UserResolver: IResolvers = {
   Query: {
-    login: async (_: void, args: QueryLoginArgs): Promise<AuthResponse> => {
-      return {
-        token: "test",
-      }
-    },
+    login: async (_: void, args: QueryLoginArgs): Promise<AuthResponse> => ({
+      token: "test",
+    }),
     patreonStatus: async (
       _: void,
       __: void,
       { dataSources }
-    ): Promise<PatreonStatusResponse> => {
-      const res = dataSources.patreonAPI.getMemberships()
-
-      return {
-        member: res.relationships.memberships.data?.length > 0 || false,
-      }
-    },
+    ): Promise<PatreonStatusResponse> =>
+      dataSources.patreonAPI.getMemberStatus(),
   },
   Mutation: {
     register: async (
       _: void,
       args: MutationRegisterArgs
-    ): Promise<AuthResponse> => {
-      return {
-        token: "test",
-      }
-    },
+    ): Promise<AuthResponse> => ({
+      token: "test",
+    }),
   },
 }

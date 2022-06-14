@@ -1,18 +1,12 @@
 import { IResolvers } from "@graphql-tools/utils"
-import { SendMailResponse, MutationSendMailArgs } from "../generated"
+import { SendEmailResponse, MutationSendEmailArgs } from "../generated"
 
 export const CommonResolver: IResolvers = {
   Mutation: {
-    sendMail: async (
+    sendEmail: async (
       _: void,
-      args: MutationSendMailArgs,
+      args: MutationSendEmailArgs,
       { dataSources }
-    ): Promise<SendMailResponse> => {
-      const res = dataSources.sendInBlueAPI.sendEmail(args)
-
-      return {
-        id: res.messageId,
-      }
-    },
+    ): Promise<SendEmailResponse> => dataSources.sendInBlueAPI.sendEmail(args),
   },
 }

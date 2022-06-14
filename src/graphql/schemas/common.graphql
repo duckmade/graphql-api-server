@@ -1,16 +1,12 @@
 extend type Mutation {
-  sendMail(
+  sendEmail(
     name: String!
     email: String!
     subject: String!
     message: String!
-  ): SendMailResponse!
+  ): SendEmailResponse!
 }
 
-type SendMailResponse {
-  id: String!
-  # accepted: [String]! | [MailAddress]!
-  # rejected: [String]! | [MailAddress]!
-  # pending: [String]! | [MailAddress]!
-  # response: String!
+type SendEmailResponse {
+  messageId: String!
 }

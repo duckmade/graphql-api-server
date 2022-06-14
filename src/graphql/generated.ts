@@ -25,7 +25,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']>;
   register: AuthResponse;
-  sendMail: SendMailResponse;
+  sendEmail: SendEmailResponse;
 };
 
 
@@ -35,7 +35,7 @@ export type MutationRegisterArgs = {
 };
 
 
-export type MutationSendMailArgs = {
+export type MutationSendEmailArgs = {
   email: Scalars['String'];
   message: Scalars['String'];
   name: Scalars['String'];
@@ -60,9 +60,9 @@ export type QueryLoginArgs = {
   password: Scalars['String'];
 };
 
-export type SendMailResponse = {
-  __typename?: 'SendMailResponse';
-  id: Scalars['String'];
+export type SendEmailResponse = {
+  __typename?: 'SendEmailResponse';
+  messageId: Scalars['String'];
 };
 
 
@@ -141,7 +141,7 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   PatreonStatusResponse: ResolverTypeWrapper<PatreonStatusResponse>;
   Query: ResolverTypeWrapper<{}>;
-  SendMailResponse: ResolverTypeWrapper<SendMailResponse>;
+  SendEmailResponse: ResolverTypeWrapper<SendEmailResponse>;
   String: ResolverTypeWrapper<Scalars['String']>;
 };
 
@@ -154,7 +154,7 @@ export type ResolversParentTypes = {
   Mutation: {};
   PatreonStatusResponse: PatreonStatusResponse;
   Query: {};
-  SendMailResponse: SendMailResponse;
+  SendEmailResponse: SendEmailResponse;
   String: Scalars['String'];
 };
 
@@ -174,7 +174,7 @@ export interface JsonObjectScalarConfig extends GraphQLScalarTypeConfig<Resolver
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   register?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
-  sendMail?: Resolver<ResolversTypes['SendMailResponse'], ParentType, ContextType, RequireFields<MutationSendMailArgs, 'email' | 'message' | 'name' | 'subject'>>;
+  sendEmail?: Resolver<ResolversTypes['SendEmailResponse'], ParentType, ContextType, RequireFields<MutationSendEmailArgs, 'email' | 'message' | 'name' | 'subject'>>;
 };
 
 export type PatreonStatusResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['PatreonStatusResponse'] = ResolversParentTypes['PatreonStatusResponse']> = {
@@ -188,8 +188,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   patreonStatus?: Resolver<ResolversTypes['PatreonStatusResponse'], ParentType, ContextType>;
 };
 
-export type SendMailResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SendMailResponse'] = ResolversParentTypes['SendMailResponse']> = {
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export type SendEmailResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SendEmailResponse'] = ResolversParentTypes['SendEmailResponse']> = {
+  messageId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -200,6 +200,6 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   PatreonStatusResponse?: PatreonStatusResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  SendMailResponse?: SendMailResponseResolvers<ContextType>;
+  SendEmailResponse?: SendEmailResponseResolvers<ContextType>;
 };
 
